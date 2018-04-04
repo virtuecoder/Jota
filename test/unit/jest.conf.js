@@ -19,7 +19,6 @@ module.exports = {
   ],
   snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
   setupFiles: ['<rootDir>/test/unit/setup'],
-  mapCoverage: true,
   coverageDirectory: '<rootDir>/test/unit/coverage',
   collectCoverageFrom: [
     'src/**/*.{js,vue}',
@@ -28,3 +27,7 @@ module.exports = {
     '!**/node_modules/**'
   ]
 }
+
+// In case of : SyntaxError: Unexpected token import
+// Run ./node_modules/.bin/jest --showConfig | grep cache and rm -rf the cache folder and all work fine!
+// https://github.com/vuejs-templates/webpack/issues/1087
