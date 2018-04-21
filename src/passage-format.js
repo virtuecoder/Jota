@@ -1,4 +1,22 @@
-export default function format(template, passage) {
+export default class Formatter {
+  constructor() {
+    this.templates = {};
+  }
+
+  addTemplate({name: name, template: template}) {
+    this.templates[name] = template;
+  }
+
+  removeTemplate(name) {
+    delete this.templates[name];
+  }
+
+  format(templateName, passage) {
+    return format(this.templates[templateName], passage);
+  }
+}
+
+function format(template, passage) {
   const bookName = Object.keys(passage)[0];
   const bookContent = passage[bookName];
 
