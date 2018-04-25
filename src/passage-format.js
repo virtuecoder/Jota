@@ -22,14 +22,6 @@ function format(template, passage) {
     .join('\n\n')
 }
 
-function slice(obj) {
-  return Object.entries(obj).map(([k, v]) => {
-    const result = {}
-    result[k] = v
-    return result
-  })
-}
-
 function formatSingleBook(template, passage) {
   const bookName = Object.keys(passage)[0]
   const chapters = Object.entries(passage[bookName])
@@ -73,14 +65,6 @@ function extractVerses([chapter, verses]) {
   return Object.entries(verses)
 }
 
-function concat(x, y) {
-  return x.concat(y)
-}
-
-function last(arr) {
-  return arr[arr.length - 1]
-}
-
 function contentFormatters(template) {
   const attributeFormatterMap = {
     textWithNumbersAndLineBreaks: verses => '\n' + verses.map(([k, v]) => `(${k}) ${v}`).join('\n'),
@@ -105,4 +89,20 @@ function formatWith({
   verseEnd, text, textWithNumbers, textWithLineBreaks, textWithNumbersAndLineBreaks,
 }) {
   return eval('`' + template + '`')
+}
+
+function slice(obj) {
+  return Object.entries(obj).map(([k, v]) => {
+    const result = {}
+    result[k] = v
+    return result
+  })
+}
+
+function concat(x, y) {
+  return x.concat(y)
+}
+
+function last(arr) {
+  return arr[arr.length - 1]
 }
