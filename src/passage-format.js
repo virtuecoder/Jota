@@ -13,24 +13,24 @@ export default class Formatter {
 
   setCurrentTemplate(name) {
     this.currentTemplate = this.templates[name]
+    this.contentFormatters = contentFormatters(this.currentTemplate)
   }
 
   format(passage) {
-    return format(this.currentTemplate, passage)
+    return format(this.currentTemplate, this.contentFormatters, passage)
   }
 }
 
-function format(template, passage) {
+function format(template, formatters, passage) {
   return slice(passage)
-    .map(singleBookPassage => formatSingleBook(template, singleBookPassage))
+    .map(singleBookPassage => formatSingleBook(template, formatters, singleBookPassage))
     .join('\n\n')
 }
 
-function formatSingleBook(template, passage) {
+function formatSingleBook(template, formatters, passage) {
   const bookName = Object.keys(passage)[0]
   const chapters = Object.entries(passage[bookName])
   const verses = versesFrom(chapters)
-  const formatters = contentFormatters(template)
   return formatWith({
     template: template,
     book: bookName,
