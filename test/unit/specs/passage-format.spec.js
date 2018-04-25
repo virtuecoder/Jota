@@ -148,5 +148,6 @@ function verifyFormat({passage, template, expected}) {
     name: 'some name',
     template: template
   })
-  expect(formatter.format('some name', passage)).toBe(expected)
+  formatter.setCurrentTemplate('some name')
+  expect(formatter.format(passage)).toBe(expected)
 }

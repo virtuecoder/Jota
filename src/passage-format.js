@@ -11,8 +11,12 @@ export default class Formatter {
     delete this.templates[name]
   }
 
-  format(templateName, passage) {
-    return format(this.templates[templateName], passage)
+  setCurrentTemplate(name) {
+    this.currentTemplate = this.templates[name]
+  }
+
+  format(passage) {
+    return format(this.currentTemplate, passage)
   }
 }
 
