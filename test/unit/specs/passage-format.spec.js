@@ -131,6 +131,18 @@ test('Should format multiple chapters with numbers', () => {
   })
 })
 
+test('Should format multi-book passage', () => {
+  verifyFormat({
+    passage: {
+      'Gen' : {'1' : {'3' : 'And God said, Let there be light: and there was light.'}},
+      'Ecc' : {'1' : {'2' : 'Vanity of vanities, saith the Preacher, vanity of vanities; all is vanity.'}}
+    },
+    template: '${book} ${chapter}:${verse} "${text}"',
+
+    expected: 'Gen 1:3 "And God said, Let there be light: and there was light."\n\nEcc 1:2 "Vanity of vanities, saith the Preacher, vanity of vanities; all is vanity."'
+  })
+})
+
 function verifyFormat({passage, template, expected}) {
   formatter.addTemplate({
     name: 'some name',

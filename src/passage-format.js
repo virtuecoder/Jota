@@ -17,6 +17,20 @@ export default class Formatter {
 }
 
 function format(template, passage) {
+  return slice(passage)
+    .map(singleBookPassage => formatSingleBook(template, singleBookPassage))
+    .join('\n\n')
+}
+
+function slice(obj) {
+  return Object.entries(obj).map(([k, v]) => {
+    const result = {}
+    result[k] = v
+    return result
+  })
+}
+
+function formatSingleBook(template, passage) {
   const bookName = Object.keys(passage)[0]
   const chapters = Object.entries(passage[bookName])
   const verses = versesFrom(chapters)
