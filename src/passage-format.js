@@ -18,28 +18,18 @@ export default class Formatter {
 
 function format(template, passage) {
   const bookName = Object.keys(passage)[0]
-  const bookContent = passage[bookName]
-
-  const chapterNumbers = Object.keys(bookContent)
-  const chapterStart = chapterNumbers[0]
-  const chapterEnd = last(chapterNumbers)
-
-  const verseStart = Object.keys(bookContent[chapterStart])[0]
-  const verseEnd = last(Object.keys(bookContent[chapterEnd]))
-
-  const verses = versesFrom(bookContent)
-
+  const chapters = Object.entries(passage[bookName])
+  const verses = versesFrom(chapters)
   const formatters = contentFormatters(template)
-
   return formatWith({
     template: template,
     book: bookName,
-    chapter: chapterStart,
-    chapterStart: chapterStart,
-    chapterEnd: chapterEnd,
-    verseStart: verseStart,
-    verseEnd: verseEnd,
-    verse: verseStart,
+    chapter: chapters[0][0],
+    chapterStart: chapters[0][0],
+    chapterEnd: last(chapters)[0],
+    verse: firstVerseNumber(chapters),
+    verseStart: firstVerseNumber(chapters),
+    verseEnd: lastVerseNumber(chapters),
     text: formatters.text(verses),
     textWithNumbers: formatters.textWithNumbers(verses),
     textWithLineBreaks: formatters.textWithLineBreaks(verses),
@@ -47,9 +37,17 @@ function format(template, passage) {
   })
 }
 
-function versesFrom(bookContent) {
-  return Object.entries(bookContent)
-    .map(hasMoreThanOneChapter(bookContent) ? extractVersesWithChapterNumber : extractVerses)
+function firstVerseNumber(chapters) {
+  return Object.keys(chapters[0][1])[0];
+}
+
+function lastVerseNumber(chapters) {
+  return last(Object.keys(last(chapters)[1]))
+}
+
+function versesFrom(chapters) {
+  return chapters
+    .map(chapters.length > 1 ? extractVersesWithChapterNumber : extractVerses)
     .reduce(concat)
 }
 
@@ -67,10 +65,6 @@ function concat(x, y) {
 
 function last(arr) {
   return arr[arr.length - 1]
-}
-
-function hasMoreThanOneChapter(bookContent) {
-  return Object.keys(bookContent).length > 1
 }
 
 function contentFormatters(template) {
