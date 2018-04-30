@@ -143,6 +143,18 @@ test('Should format multiple passages', () => {
   })
 })
 
+test('Should not add any additional linebreaks between passages when ${textWithLineBreaks} is used in tempalte', () => {
+  verifyFormat({
+    passages: [
+      {'Gen' : {'1' : {'3' : 'And God said, Let there be light: and there was light.'}}},
+      {'Ecc' : {'1' : {'2' : 'Vanity of vanities, saith the Preacher, vanity of vanities; all is vanity.'}}}
+    ],
+    template: '${book} ${chapter}:${verse} ${textWithLineBreaks}',
+
+    expected: 'Gen 1:3 \nAnd God said, Let there be light: and there was light.\n\nEcc 1:2 \nVanity of vanities, saith the Preacher, vanity of vanities; all is vanity.'
+  })
+})
+
 function verifyFormat({passages, template, expected}) {
   formatter.addTemplate({
     name: 'some name',
