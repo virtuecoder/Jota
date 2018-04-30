@@ -13,38 +13,36 @@ export default class Formatter {
 
   setCurrentTemplate(name) {
     this.currentTemplate = this.templates[name]
-    this.contentFormatters = contentFormatters(this.currentTemplate)
+    this.contentFormatter = contentFormatterFor(this.currentTemplate)
   }
 
   format(passage) {
-    return format(this.currentTemplate, this.contentFormatters, passage)
+    return format(this.currentTemplate, this.contentFormatter, passage)
   }
 }
 
-function format(template, formatters, passage) {
+function format(template, formatVersesFn, passage) {
   return slice(passage)
-    .map(singleBookPassage => formatSingleBook(template, formatters, singleBookPassage))
+    .map(singleBookPassage => formatSingleBook(template, formatVersesFn, singleBookPassage))
     .join('\n\n')
 }
 
-function formatSingleBook(template, formatters, passage) {
-  const bookName = Object.keys(passage)[0]
-  const chapters = Object.entries(passage[bookName])
-  const verses = versesFrom(chapters)
-  return formatWith({
-    template: template,
-    book: bookName,
-    chapter: chapters[0][0],
-    chapterStart: chapters[0][0],
-    chapterEnd: last(chapters)[0],
-    verse: firstVerseNumber(chapters),
-    verseStart: firstVerseNumber(chapters),
-    verseEnd: lastVerseNumber(chapters),
-    text: formatters.text(verses),
-    textWithNumbers: formatters.textWithNumbers(verses),
-    textWithLineBreaks: formatters.textWithLineBreaks(verses),
-    textWithNumbersAndLineBreaks: formatters.textWithNumbersAndLineBreaks(verses)
-  })
+function formatSingleBook(template, formatVersesFn, passage) {
+  const book = Object.keys(passage)[0]
+  const chapters = Object.entries(passage[book])
+
+  let chapter, chapterStart;
+  chapter = chapterStart = chapters[0][0]
+  const chapterEnd = last(chapters)[0]
+
+  let verse, verseStart
+  verse = verseStart = firstVerseNumber(chapters)
+  const verseEnd = lastVerseNumber(chapters)
+
+  let text, textWithNumbers, textWithLineBreaks, textWithNumbersAndLineBreaks
+  text = textWithNumbers = textWithLineBreaks = textWithNumbersAndLineBreaks = formatVersesFn(versesFrom(chapters))
+
+  return eval('`' + template + '`')
 }
 
 function firstVerseNumber(chapters) {
@@ -69,30 +67,14 @@ function extractVerses([chapter, verses]) {
   return Object.entries(verses)
 }
 
-function contentFormatters(template) {
-  const attributeFormatterMap = {
+function contentFormatterFor(template) {
+  const [_, fn] = Object.entries({
     textWithNumbersAndLineBreaks: verses => '\n' + verses.map(([k, v]) => `(${k}) ${v}`).join('\n'),
     textWithNumbers: verses => verses.map(([k, v]) => `(${k}) ${v}`).join(' '),
     textWithLineBreaks: verses => '\n' + verses.map(([k, v]) => v).join('\n'),
     text: verses => verses.map(([k, v]) => v).join(' ')
-  }
-  const formatters = objectWithDefaultValue(() => undefined)
-  const [attr, formatter] = Object.entries(attributeFormatterMap).find(([k, v]) => template.includes(k))
-  formatters[attr] = formatter
-  return formatters
-}
-
-function objectWithDefaultValue(defaultValue) {
-  return new Proxy({}, {
-    get: (target, name) => name in target ? target[name] : defaultValue
-  })
-}
-
-function formatWith({
-  template, book, chapter, chapterStart, chapterEnd, verse, verseStart,
-  verseEnd, text, textWithNumbers, textWithLineBreaks, textWithNumbersAndLineBreaks,
-}) {
-  return eval('`' + template + '`')
+  }).find(([k, v]) => template.includes(k))
+  return fn;
 }
 
 function slice(obj) {
