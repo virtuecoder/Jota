@@ -16,13 +16,13 @@ export default class Formatter {
     this.contentFormatter = contentFormatterFor(this.currentTemplate)
   }
 
-  format(passage) {
-    return format(this.currentTemplate, this.contentFormatter, passage)
+  format(passages) {
+    return format(this.currentTemplate, this.contentFormatter, passages)
   }
 }
 
-function format(template, formatVersesFn, passage) {
-  return slice(passage)
+function format(template, formatVersesFn, passages) {
+  return passages
     .map(singleBookPassage => formatSingleBook(template, formatVersesFn, singleBookPassage))
     .join('\n\n')
 }
@@ -75,14 +75,6 @@ function contentFormatterFor(template) {
     text: verses => verses.map(([k, v]) => v).join(' ')
   }).find(([k, v]) => template.includes(k))
   return fn;
-}
-
-function slice(obj) {
-  return Object.entries(obj).map(([k, v]) => {
-    const result = {}
-    result[k] = v
-    return result
-  })
 }
 
 function concat(x, y) {
