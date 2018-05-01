@@ -42,6 +42,11 @@ function formatSingleBook(template, formatVersesFn, passage) {
   let text, textWithNumbers, textWithLineBreaks, textWithNumbersAndLineBreaks
   text = textWithNumbers = textWithLineBreaks = textWithNumbersAndLineBreaks = formatVersesFn(versesFrom(chapters))
 
+  /*
+    eval expression below expects the following variables to be defined:
+      book, chapter, chapterStart, chapterEnd, verse, verseStart, verseEnd,
+      text, textWithNumbers, textWithLineBreaks, textWithNumbersAndLineBreaks
+  */
   return eval('`' + template + '`')
 }
 
