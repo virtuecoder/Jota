@@ -13,11 +13,11 @@ export default class Formatter {
 
   setCurrentTemplate(name) {
     this.currentTemplate = this.templates[name]
-    this.contentFormatter = contentFormatterFor(this.currentTemplate)
+    this.formatVersesFn = formatVersesFnFor(this.currentTemplate)
   }
 
   format(passages) {
-    return format(this.currentTemplate, this.contentFormatter, passages)
+    return format(this.currentTemplate, this.formatVersesFn, passages)
   }
 }
 
@@ -67,7 +67,7 @@ function extractVerses([chapter, verses]) {
   return Object.entries(verses)
 }
 
-function contentFormatterFor(template) {
+function formatVersesFnFor(template) {
   const [_, fn] = Object.entries({
     textWithNumbersAndLineBreaks: verses => '\n' + verses.map(([k, v]) => `(${k}) ${v}`).join('\n'),
     textWithNumbers: verses => verses.map(([k, v]) => `(${k}) ${v}`).join(' '),
